@@ -1,0 +1,212 @@
+package Customer;
+
+
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+public class CustomerDbUtil {
+	int ret=-1;
+	private DataSource dataSource;
+	public CustomerDbUtil(DataSource theDataSource) {
+		dataSource=theDataSource;
+	}
+	
+	public void addBidder(CustomerDetails theCustomer) throws Exception {
+		
+		Connection myConn=null;
+		PreparedStatement myStmt=null;
+		ResultSet myRs=null;
+		
+		
+			
+			//Connect with Db
+			myConn=dataSource.getConnection();
+			//create sql Statement
+			String sql="insert into bidderinfo "
+					  +"(firstName, lastName, email, DOB, password, BankID, AadharID) "
+					  +"values (?, ?, ?, ?, ?, ?, ?)";
+			
+			myStmt=myConn.prepareStatement(sql);
+			//set param values
+			myStmt.setString(1, theCustomer.getFirstName());
+			myStmt.setString(2, theCustomer.getLastName());
+			myStmt.setString(3, theCustomer.getEmail());
+			myStmt.setString(4, theCustomer.getDOB());
+			myStmt.setString(5, theCustomer.getPassword());
+			myStmt.setString(6, theCustomer.getBankID());
+			myStmt.setString(7, theCustomer.getAadharID());
+			
+			//execute the query
+			myStmt.execute();
+			
+			//clear the JDBC objects
+			close(myConn,myStmt,null);
+		
+		
+}
+
+	private void close(Connection myConn, Statement myStmt, ResultSet myRs) {
+			try {
+				if (myRs != null) {
+					myRs.close();
+				}
+				
+				if (myStmt != null) {
+					myStmt.close();
+				}
+				
+				if (myConn != null) {
+					myConn.close();   // doesn't really close it ... just puts back in connection pool
+				}
+			}
+			catch (Exception exc) {
+				exc.printStackTrace();
+			
+		}
+	}
+
+	
+
+	public void addApplication(CustomerApplication theCustomer) throws Exception {
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs=null;
+		
+		try {
+			// get db connection
+			myConn = dataSource.getConnection();
+			
+			// create sql for insert
+			String sql = "insert into customerformdetails "
+					   + "(BankID, AadharID, Age, Address, Salary) "
+					   + "values (?, ?, ?, ?, ?)";
+			
+			myStmt = myConn.prepareStatement(sql);
+			
+			// set the param values for the student
+			myStmt.setString(1, theCustomer.getBankID());
+			myStmt.setString(2, theCustomer.getAadharID());
+			myStmt.setString(3, theCustomer.getAge());
+			myStmt.setString(4, theCustomer.getAddress());
+			myStmt.setString(5, theCustomer.getSalary());
+			
+			
+			// execute sql insert
+			myStmt.execute();
+		}
+		finally {
+			// clean up JDBC objects
+			close(myConn, myStmt, myRs);
+		}
+		
+	}
+
+	public List<CustomerApplication> getCustomer() throws SQLException{
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+			List<CustomerApplication> customers= new ArrayList<>();
+			
+			myConn = dataSource.getConnection();
+			String sql = "select * from customerformdetails order by BankID";
+			myStmt = myConn.createStatement();
+			myRs = myStmt.executeQuery(sql);
+			
+			while(myRs.next()) {
+				
+				String BankID=myRs.getString("BankID");
+				String AadharID=myRs.getString("AadharID");
+				String Age=myRs.getString("Age");
+				String Address=myRs.getString("Address");
+				String Salary=myRs.getString("Salary");
+				
+				CustomerApplication cnt=new CustomerApplication(BankID,AadharID,Age,Address,Salary);
+				
+				customers.add(cnt);
+			}
+		close(myConn,myStmt,myRs);
+		return customers;
+	}
+
+	public void deleteCustomer(CustomerApplication theCustomer) throws SQLException {
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		myConn = dataSource.getConnection();
+		String id=theCustomer.getBankID();
+		String sql="delete from customerformdetails where BankID="+'"'+id+'"';
+		//String sql1="delete from bidderinfo where BankID="+'"'+id+'"';
+		myStmt = myConn.prepareStatement(sql);
+		//myStmt = myConn.prepareStatement(sql1);
+		myStmt.execute();
+		close(myConn, myStmt, myRs);
+		
+	}
+
+	public int checkcustomer(CustomerDetails theCustomer) throws SQLException{
+		Connection myConn = null;
+		PreparedStatement myStmt = null;
+		ResultSet myRs = null;
+		myConn=dataSource.getConnection();
+		String Bid=theCustomer.getBankID();
+		String sql="select * from bidderinfo where BankID="+'"'+Bid+'"';
+		myStmt=myConn.prepareStatement(sql);
+		myRs=myStmt.executeQuery();
+		while(myRs.next()) {
+			String password=myRs.getString("password");
+			
+			if(password.equals(theCustomer.getPassword())) {
+				ret=1;
+			}
+			else {
+				ret=0;
+			}
+		}
+		close(myConn,myStmt,myRs);
+		return ret;
+	}
+
+	public List<RepossessedCars> getRepossessedCars() throws SQLException{
+		
+		List<RepossessedCars> cars= new ArrayList<>();
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myConn=dataSource.getConnection();
+			String sql="select * from repossesedvehicles";
+			myStmt=myConn.createStatement();
+			myRs=myStmt.executeQuery(sql);
+			while(myRs.next()) {
+				
+				String id=myRs.getString("VehicleID");
+				String name=myRs.getString("VehicleName");
+				String color=myRs.getString("VehicleColor");
+				int bp=myRs.getInt("BasePrice");
+				String company=myRs.getString("VehicleCompany");
+				int t=myRs.getInt("TenureUsed");
+				
+				RepossessedCars tempVehicle=new RepossessedCars(id,name,color,bp,company,t);
+				
+				cars.add(tempVehicle);
+				
+			}
+			return cars;
+		}
+		finally {
+			close(myConn,myStmt,myRs);
+		}
+		
+	}
+
+	
+}
