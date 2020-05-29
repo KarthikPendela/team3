@@ -34,11 +34,9 @@
 					
 				</tr>
 		<%} %>
-	
-	
-	
-	
 	</table>
+	<br/><br/>
+	<a href="bid.jsp">Go For Bidding</a>
 
 
 </body>

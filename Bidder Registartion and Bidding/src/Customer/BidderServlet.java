@@ -71,6 +71,13 @@ public class BidderServlet extends HttpServlet {
 				case "VIEWCARS":
 					carsview(request,response);
 					break;
+				
+				case "BID":
+					addBid(request,response);
+					break;
+				
+				case "STATUS":
+					viewStatus(request,response);
 			
 			}
 			
@@ -79,6 +86,31 @@ public class BidderServlet extends HttpServlet {
 		catch(Exception exc) {
 			throw new ServletException(exc);
 		}
+	}
+
+	private void viewStatus(HttpServletRequest request, HttpServletResponse response) throws SQLException,IOException,ServletException{
+		List<BiddingClass> bids= CustomerdbUtil.getBiddingClass();
+		request.setAttribute("BID-LIST", bids);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/viewbidstatus.jsp");
+		dispatcher.forward(request, response);
+		
+		
+	}
+
+	private void addBid(HttpServletRequest request, HttpServletResponse response) throws SQLException,IOException,ServletException{
+		String BankID=request.getParameter("BankId");
+		String VehicleID=request.getParameter("VehicleId");
+		String Bid=request.getParameter("bid");
+		
+		//create a new bid
+		BiddingClass theBid= new BiddingClass(BankID,VehicleID,Bid);
+		
+		//add the bid to database
+		CustomerdbUtil.addBid(theBid);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/goto.jsp");
+		dispatcher.forward(request, response);
+		
+		
 	}
 
 	private void carsview(HttpServletRequest request, HttpServletResponse response) throws SQLException,IOException,ServletException{

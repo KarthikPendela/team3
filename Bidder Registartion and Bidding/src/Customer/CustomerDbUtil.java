@@ -208,5 +208,67 @@ public class CustomerDbUtil {
 		
 	}
 
+	public void addBid(BiddingClass theBid) throws SQLException{
+		
+		Connection myConn=null;
+		PreparedStatement myStmt=null;
+		ResultSet myRs=null;
+		
+		
+			
+			//Connect with Db
+			myConn=dataSource.getConnection();
+			//create sql Statement
+			String sql="insert into biddingtable "
+					  +"(BankID,VehicleID,Bid) "
+					  +"values (?, ?, ?)";
+			
+			myStmt=myConn.prepareStatement(sql);
+			//set param values
+			myStmt.setString(1, theBid.getVehicleID());
+			myStmt.setString(2, theBid.getBankID());
+			myStmt.setString(3, theBid.getBid());
+			
+			//execute the query
+			myStmt.execute();
+			
+			//clear the JDBC objects
+			close(myConn,myStmt,null);
+		
+	}
+
+	public List<BiddingClass> getBiddingClass() throws SQLException{
+		
+		List<BiddingClass> bids= new ArrayList<>();
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myConn=dataSource.getConnection();
+			String sql="select * from biddingtable";
+			myStmt=myConn.createStatement();
+			myRs=myStmt.executeQuery(sql);
+			while(myRs.next()) {
+				
+				String id=myRs.getString("VehicleID");
+				String Baid=myRs.getString("BankID");
+				String bid=myRs.getString("Bid");
+				
+				BiddingClass tempBid=new BiddingClass(id,Baid,bid);
+				
+				bids.add(tempBid);
+				
+			}
+			return bids;
+		}
+		finally {
+			close(myConn,myStmt,myRs);
+		}
+		
+		
+	}
+
+	
 	
 }
