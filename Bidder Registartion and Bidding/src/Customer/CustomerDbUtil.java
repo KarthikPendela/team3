@@ -269,6 +269,75 @@ public class CustomerDbUtil {
 		
 	}
 
+	public void addReport(ReportClass theReport) throws SQLException{
+		
+		Connection myConn = null;
+		Statement myStmt = null;
+		PreparedStatement myStmt1=null;
+		ResultSet myRs = null;
+		myConn=dataSource.getConnection();
+		String id=theReport.getVehicleID();
+		String sql="select * from biddingtable where VehicleID="+"'"+id+"'"+" order by ABS(Bid)";
+		myStmt=myConn.createStatement();
+		myRs=myStmt.executeQuery(sql);
+		String BankID="";
+		String HighestBid="";
+		
+		while(myRs.next()) {
+			
+			BankID=myRs.getString("BankID");
+			HighestBid=myRs.getString("Bid");
+		}
+		
+		
+		//Insert into table 
+		String sql1="insert into reporttable "
+				   +"(VehicleID,BankID,HighestBid) "
+				   +"values(?, ?, ?)";
+		
+		myStmt1=myConn.prepareStatement(sql1);
+		
+		//setting param values
+		myStmt1.setString(1,id);
+		myStmt1.setString(2,BankID);
+		myStmt1.setString(3,HighestBid);
+		
+		//execute the query
+		myStmt1.execute();
+		
+		
+	}
+
+	public List<ReportClass> getReportClass() throws SQLException {
+		
+		List<ReportClass> reports= new ArrayList<>();
+		Connection myConn = null;
+		Statement myStmt = null;
+		ResultSet myRs = null;
+		
+		try {
+			myConn=dataSource.getConnection();
+			String sql="select * from reporttable";
+			myStmt=myConn.createStatement();
+			myRs=myStmt.executeQuery(sql);
+			while(myRs.next()) {
+				
+				String Vid=myRs.getString("VehicleID");
+				String Banid=myRs.getString("BankID");
+				String bid=myRs.getString("HighestBid");
+				
+				ReportClass tempReport=new ReportClass(Vid,Banid,bid);
+				
+				reports.add(tempReport);
+				
+			}
+			return reports;
+		}
+		finally {
+			close(myConn,myStmt,myRs);
+		}
+	}
+
 	
 	
 }

@@ -23,6 +23,8 @@ public class BidderServlet extends HttpServlet {
 	
 	private CustomerDbUtil CustomerdbUtil;
 	
+	int lent=0;
+	
 	@Resource(name="jdbc/web_student_tracker")
 	private DataSource dataSource;
        
@@ -78,6 +80,12 @@ public class BidderServlet extends HttpServlet {
 				
 				case "STATUS":
 					viewStatus(request,response);
+				
+				case "MAKEREPORT":
+					makeReport(request,response);
+				
+				case "VIEWREPORT":
+					viewReport(request,response);
 			
 			}
 			
@@ -86,6 +94,17 @@ public class BidderServlet extends HttpServlet {
 		catch(Exception exc) {
 			throw new ServletException(exc);
 		}
+	}
+
+	
+
+	private void viewReport(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException {
+		
+		List<ReportClass> reports=CustomerdbUtil.getReportClass();
+		request.setAttribute("REPORT-LIST", reports);
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/viewfinalreport.jsp");
+		dispatcher.forward(request, response);
+		
 	}
 
 	private void viewStatus(HttpServletRequest request, HttpServletResponse response) throws SQLException,IOException,ServletException{
@@ -117,6 +136,7 @@ public class BidderServlet extends HttpServlet {
 		
 		List<RepossessedCars> cars= CustomerdbUtil.getRepossessedCars();
 		request.setAttribute("CARS_LIST", cars);
+		lent=cars.size();
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/viewcars.jsp");
 		dispatcher.forward(request, response);
 		
@@ -192,6 +212,19 @@ public class BidderServlet extends HttpServlet {
 		//add the bidder to database
 		CustomerdbUtil.addBidder(theCustomer);
 		RequestDispatcher dispatcher =request.getRequestDispatcher("/CustomerRegistration.jsp");
+		dispatcher.forward(request, response);
+		
+	}
+	
+	private void makeReport(HttpServletRequest request, HttpServletResponse response) throws SQLException, ServletException, IOException{
+		int i=0;
+		for(i=1;i<=5;i++)
+		{
+			String j=String.valueOf(i);
+			ReportClass theReport= new ReportClass(j);
+			CustomerdbUtil.addReport(theReport);
+		}
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/login.jsp");
 		dispatcher.forward(request, response);
 		
 	}
