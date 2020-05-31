@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
+	<link type="text/css" rel="stylesheet" href="css/add-customer-style.css">
+</head>
 <body>
 
 

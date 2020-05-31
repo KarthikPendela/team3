@@ -3,10 +3,21 @@
 <html>
 <head>
 	<title>Registration Form</title>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
+	<link type="text/css" rel="stylesheet" href="css/add-customer-style.css">
 </head>
 
 <body>
-	<h1>Registration Form</h1>
+	<div id="wrapper">
+		<div id="header">
+		
+			<h2>Registration Form</h2>
+		
+		</div>
+	
+	
+	</div>
+	<div id="container">
 	<form action="BidderServlet" method="GET">
 		
 			<input type="hidden" name="command" value="ADD"/>
@@ -50,12 +61,13 @@
 					
 					<tr>
 						<td><label></label></td>
-						<td><input type="submit" value="Register"/></td>
+						<td><input type="submit" value="Register" class="save"/></td>
 					</tr>
 				
 				</tbody>
 			</table>
 		</form>
+	</div>
 
 
 </body>

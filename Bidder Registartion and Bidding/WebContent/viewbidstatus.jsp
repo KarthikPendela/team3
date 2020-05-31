@@ -6,32 +6,41 @@
 <html>
 <head>
 	<title>VIEW BID STATUS</title>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
 </head>
 <body>
-	<h1>BIDDING STATUS</h1>
+	<div id="wrapper">
+		<div id="header">
+			<h2>BIDDING STATUS</h2>
+		</div>
+	</div>
 	<br/><br/>
-	<table border="1">
-		<tr>
-			<th>BankID</th>
-			<th>VehicleID</th>
-			<th>BID</th>
-		</tr>
-		
-		<%ArrayList<BiddingClass> bids =(ArrayList<BiddingClass>)request.getAttribute("BID-LIST");
-				for(BiddingClass tempBids:bids){%>
-				
+	<div id="container">
+		<div id="content">
+			<table>
 				<tr>
-					<td><%=tempBids.getBankID() %></td>
-					<td><%=tempBids.getVehicleID() %></td>
-					<td><%=tempBids.getBid() %></td>
-					
+					<th>BankID</th>
+					<th>VehicleID</th>
+					<th>BID</th>
 				</tr>
-		<%} %>
-
-	</table>
+				
+				<%ArrayList<BiddingClass> bids =(ArrayList<BiddingClass>)request.getAttribute("BID-LIST");
+						for(BiddingClass tempBids:bids){%>
+						
+						<tr>
+							<td><%=tempBids.getBankID() %></td>
+							<td><%=tempBids.getVehicleID() %></td>
+							<td><%=tempBids.getBid() %></td>
+							
+						</tr>
+				<%} %>
+		
+			</table>
+		</div>
+	</div>
 	<br/><br/>
 	<a href="bid.jsp">BID AGAIN?</a>
 	<br/><br/>
-	<a href="login.jsp">LOGOUT</a>
+	
 </body>
 </html>

@@ -2,6 +2,8 @@
 <html>
 <head>
 	<title>REJECTION OF APPLICATION</title>
+	<link type="text/css" rel="stylesheet" href="css/style.css">
+	<link type="text/css" rel="stylesheet" href="css/add-customer-style.css">
 </head>
 
 <body>
@@ -16,7 +18,7 @@
 		BankID:<input type="text" name="BankId"/>
 		
 		<br/><br/>
-		<input type="Submit" value="Delete"/>
+		<input type="Submit" value="Delete" class="save"/>
 	
 	
 	</form>

@@ -305,6 +305,9 @@ public class CustomerDbUtil {
 		//execute the query
 		myStmt1.execute();
 		
+		close(myConn,myStmt1,myRs);
+		close(myConn,myStmt,null);
+		
 		
 	}
 
